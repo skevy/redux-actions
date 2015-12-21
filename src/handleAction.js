@@ -27,7 +27,7 @@ export default function handleAction(type, reducers) {
 
     // If function is passed instead of map, use as reducer
     const reducersMap = isFunction(reducers)
-      ? { next: reducers }
+      ? { next: reducers, throw: reducers }
       : reducers;
 
     // Otherwise, assume an action map was passed

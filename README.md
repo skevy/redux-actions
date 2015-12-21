@@ -9,6 +9,9 @@ redux-actions
 ```js
 npm install --save redux-actions
 ```
+```js
+import { createAction, handleAction, handleActions } from 'redux-actions';
+```
 
 ### `createAction(type, payloadCreator = Identity, ?metaCreator)`
 
@@ -24,6 +27,23 @@ increment = createAction('INCREMENT');
 expect(increment(42)).to.deep.equal({
   type: 'INCREMENT',
   payload: 42
+});
+```
+
+If the payload is an instance of an [Error
+object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error),
+redux-actions will automatically set ```action.error``` to true.
+
+Example:
+
+```js
+const increment = createAction('INCREMENT');
+
+const error = new TypeError('not a number');
+expect(increment(error)).to.deep.equal({
+  type: 'INCREMENT',
+  payload: error,
+  error: true
 });
 ```
 
@@ -76,12 +96,12 @@ const reducer = handleActions({
 
 ## Usage with middleware
 
-redux-actions is handy all by itself, however, it's real power comes when you combine it with middleware.
+redux-actions is handy all by itself, however, its real power comes when you combine it with middleware.
 
 The identity form of `createAction` is a great way to create a single action creator that handles multiple payload types. For example, using [redux-promise](https://github.com/acdlite/redux-promise) and [redux-rx](https://github.com/acdlite/redux-rx):
 
 ```js
-let addTodo = createAction('ADD_TODO');
+const addTodo = createAction('ADD_TODO');
 
 // A single reducer...
 handleAction('ADD_TODO', (state = { todos: [] }, action) => ({
